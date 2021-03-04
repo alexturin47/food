@@ -133,20 +133,31 @@ document.addEventListener('DOMContentLoaded', () => {
 	// window.addEventListener('scroll', showModalByScroll);
 
 
+
+	// Классы для карточек
 	class MenuItem { 
-		constructor (subtitle, descr, price, img, alt){
+		constructor (subtitle, descr, price, img, alt, parentSelector, ...classes){
 			this.subtitle = subtitle;
 			this.descr = descr;
 			this.price = price;
 			this.img = img;
 			this.alt = alt;
+			this.parent = document.querySelector(parentSelector);
+			this.classes = classes;
 			this.transfer = 65;
 			this.changeToRUB();
 		}
 
-		create(){
-			return `
-			<div class="menu__item">
+		render(){
+			const element = document.createElement('div');
+			if(this.classes.length === 0){
+				this.classes = 'menu__item';
+				element.classList.add(this.classes);
+			} else {
+				this.classes.forEach(className => element.classList.add(className));
+			}
+			
+			element.innerHTML = `
 				<img src="${this.img}" alt="${this.alt}">
 				<h3 class="menu__item-subtitle">Меню "${this.subtitle}"</h3>
 				<div class="menu__item-descr">${this.descr}</div>
@@ -155,7 +166,8 @@ document.addEventListener('DOMContentLoaded', () => {
 					<div class="menu__item-cost">Цена:</div>
 					<div class="menu__item-total"><span>${this.price}</span> грн/день</div>
 				</div>
-			</div>`;
+				`;
+			this.parent.append(element);
 		}
 
 		changeToRUB(){
@@ -164,13 +176,12 @@ document.addEventListener('DOMContentLoaded', () => {
 		
 	}
 
-	const menuField = document.querySelector('.menu__field').firstElementChild;
 	const menuItems =[
 		{	title: 'Фитнес',
 			descr: 'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
 			img: 'img/tabs/vegy.jpg',
 			alt: 'vegy',
-			price: 229
+			price: 229			
 		},
 
 		{	title: 'Премиум',
@@ -189,15 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	];
 
 	menuItems.forEach(item => {
-		const menuItem = new MenuItem(item.title, item.descr, item.price, item.img, item.alt);
-		menuField.innerHTML += menuItem.create();
+		new MenuItem(item.title, item.descr, item.price, item.img, item.alt, '.menu .container').render();
 	});
-
-
-	function digitalRoot(n){
-		return (n - 1) % 9 + 1;
-	}
-
-	console.log(digitalRoot(10));
 
 });
