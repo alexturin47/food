@@ -89,7 +89,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	// Modal
 
 	const btnShowModal = document.querySelectorAll('[data-modal]'),
-				btnCloseModal = document.querySelector('[data-close]'),
 				modalWindow = document.querySelector('.modal');
 	
 
@@ -101,17 +100,17 @@ document.addEventListener('DOMContentLoaded', () => {
 	function openModal(){
 		modalWindow.style.display = "block";
 			document.body.style.overflow = 'hidden';
-			clearInterval(modalTimerId);
+			//clearInterval(modalTimerId);
 	}
 
 	btnShowModal.forEach(item => {
 		item.addEventListener('click', openModal);
 	});
 
-	btnCloseModal.addEventListener('click', closeModal);
+
 
 	modalWindow.addEventListener('click', (e)=>{
-		if(e.target === modalWindow) {
+		if(e.target === modalWindow  || e.target.getAttribute('data-close') == '') {
 			closeModal();
 		}
 	});
@@ -202,5 +201,89 @@ document.addEventListener('DOMContentLoaded', () => {
 	menuItems.forEach(item => {
 		new MenuItem(item.title, item.descr, item.price, item.img, item.alt, '.menu .container').render();
 	});
+
+
+	// AJAX запросы
+
+	const forms = document.querySelectorAll('form');
+
+	const message = {
+		loading: 'img/spinner.svg',
+		succes: 'Спасибо! Скоро мы с вами свяжемся',
+		fail: 'Что-то пошло не так...'
+	};
+
+	forms.forEach(item => {
+		postData(item);
+	});
+
+	function postData(form){
+		form.addEventListener('submit', (e)=>{
+			e.preventDefault();
+
+			const statusMessage = document.createElement('img');
+			statusMessage.src = message.loading;
+			statusMessage.style.cssText = `
+				display: block;
+				margin: auto;
+			`;
+			form.append(statusMessage);
+
+			const request = new XMLHttpRequest();
+			request.open('POST', 'server.php');
+
+			request.setRequestHeader('Content-type', 'application/json');	
+			const formData = new FormData(form);
+
+			const object ={};
+			formData.forEach(function(value, key){
+				object[key] = value;
+			});
+
+			const json = JSON.stringify(object);
+
+			request.send(json);
+
+			request.addEventListener('load', ()=>{
+				if(request.status === 200){
+					console.log(request.response);
+					showThanksModal(message.succes);
+					form.reset();
+					setTimeout(()=>{
+						statusMessage.textContent = '';
+					}, 3000);
+				} else {
+					showThanksModal(message.fail);
+					setTimeout(()=>{
+						statusMessage.textContent = '';
+					}, 3000);
+				}
+			});
+		});
+	}
+
+
+	function showThanksModal(message){
+		const prevModalDialog = document.querySelector('.modal__dialog');
+		prevModalDialog.style.display = "none";
+
+		openModal();
+		const thanksModal = document.createElement('div');
+		thanksModal.classList.add('modal__dialog');
+		thanksModal.innerHTML = `
+			<div class="modal__content">
+				<div class="modal__close" data-close>&times;</div>
+				<div class="modal__title">${message}</div>
+			</div>
+		`;
+
+		document.querySelector('.modal').append(thanksModal);
+
+		setTimeout(()=>{
+			thanksModal.remove();
+			prevModalDialog.style.display = "block";
+			closeModal();
+		}, 5000);
+	}
 
 });
