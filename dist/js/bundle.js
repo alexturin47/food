@@ -286,16 +286,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _sevices_services__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../sevices/services */ "./js/sevices/services.js");
 
 
-function modal(triggerSelector, modalSelector, modalTimerId) {
+function modal(triggerSelector, modalSelector) {
   const btnShowModal = document.querySelectorAll(triggerSelector),
     modalWindow = document.querySelector(modalSelector);
+
+  const modalTimerId = setTimeout(openModal, 10000);
 
   function closeModal() {
     modalWindow.style.display = "none";
     document.body.style.overflow = "";
   }
 
-  function openModal(modalTimerId) {
+  function openModal() {
     modalWindow.style.display = "block";
     document.body.style.overflow = "hidden";
 
@@ -308,7 +310,7 @@ function modal(triggerSelector, modalSelector, modalTimerId) {
   }
 
   btnShowModal.forEach((item) => {
-    item.addEventListener("click", openModal(modalTimerId));
+    item.addEventListener("click", openModal);
   });
 
   modalWindow.addEventListener("click", (e) => {
@@ -378,7 +380,7 @@ function modal(triggerSelector, modalSelector, modalTimerId) {
     const prevModalDialog = document.querySelector(".modal__dialog");
     prevModalDialog.style.display = "none";
 
-    openModal(modalTimerId);
+    openModal();
     const thanksModal = document.createElement("div");
     thanksModal.classList.add("modal__dialog");
     thanksModal.innerHTML = `
@@ -396,21 +398,20 @@ function modal(triggerSelector, modalSelector, modalTimerId) {
       closeModal();
     }, 5000);
   }
-
-	
 	
 
   function showModalByScroll(){
   	if( window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight){
-  		openModal(modalTimerId);
+  		openModal();
   		window.removeEventListener('scroll', showModalByScroll);
   	}
   }
   window.addEventListener('scroll', showModalByScroll);
 }
 
-//export {openModal};
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (modal);
+
 
 
 /***/ }),
@@ -716,14 +717,14 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
+//import { openModal } from "./modules/modal";
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  const modalTimerId = setTimeout(() => (0,_modules_modal__WEBPACK_IMPORTED_MODULE_1__.openModal)(modalTimerId), 500000);
+  
 
   (0,_modules_tabs__WEBPACK_IMPORTED_MODULE_0__.default)();
-  (0,_modules_modal__WEBPACK_IMPORTED_MODULE_1__.default)("[data-modal]", ".modal", modalTimerId);
+  (0,_modules_modal__WEBPACK_IMPORTED_MODULE_1__.default)("[data-modal]", ".modal");
   (0,_modules_action_timer__WEBPACK_IMPORTED_MODULE_2__.default)();
   (0,_modules_cards__WEBPACK_IMPORTED_MODULE_3__.default)();
   (0,_modules_slider__WEBPACK_IMPORTED_MODULE_4__.default)();

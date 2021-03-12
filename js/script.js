@@ -8,14 +8,14 @@ import timer from "./modules/action-timer";
 import cards from "./modules/cards";
 import slider from "./modules/slider";
 import calc from "./modules/calc";
-import { openModal } from "./modules/modal";
+//import { openModal } from "./modules/modal";
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  const modalTimerId = setTimeout(() => openModal(modalTimerId), 500000);
+  
 
   tabs();
-  modal("[data-modal]", ".modal", modalTimerId);
+  modal("[data-modal]", ".modal");
   timer();
   cards();
   slider();
