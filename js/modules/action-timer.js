@@ -1,7 +1,7 @@
 function actionTimer() {
   // Timer
 
-  const deadline = new Date("2021,03,12");
+  const deadline = new Date("2021,04,12");
   const date = deadline - new Date();
 
   const actionDays = document.querySelector("#days"),
